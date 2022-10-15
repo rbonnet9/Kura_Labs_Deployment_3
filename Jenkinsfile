@@ -3,7 +3,6 @@ pipeline {
    stages {
     stage ('Build') {
       steps {
-        keepRunning {
         sh '''#!/bin/bash
         python3 -m venv test3
         source test3/bin/activate
@@ -12,7 +11,6 @@ pipeline {
         export FLASK_APP=application
         flask run &
         '''
-        }
      }
       
      post{
@@ -30,12 +28,10 @@ pipeline {
    }
     stage ('test') {
       steps {
-        keepRunning {
         sh '''#!/bin/bash
         source test3/bin/activate
         py.test --verbose --junit-xml test-reports/results.xml
         ''' 
-        }
       }
     
       post{
@@ -57,7 +53,6 @@ pipeline {
     stage ('Clean'){
       agent{label 'awsDeploy'}
       steps {
-        keepRunning {
         sh '''#!/bin/bash
         if [[ $(ps aux | grep -i "gunicorn" | tr -s " "| head -n 1 | cut -d " " -f 2) != 0 ]]
         then
@@ -66,7 +61,6 @@ pipeline {
           exit 0
         fi
         '''
-        }
       }
       post{
        success { 
@@ -88,8 +82,7 @@ pipeline {
           sh '''#!/bin/bash
           pip install -r requirements.txt
           pip install gunicorn
-          python3 -m 
-          JENKINS_NODE_COOKIE=stayAlive gunicorn -w 4 application:app -b 0.0.0.0 --daemon
+          python3 -m gunicorn -w 4 application:app -b 0.0.0.0 --daemon
           '''
         }
         post{
