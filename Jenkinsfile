@@ -50,8 +50,8 @@ pipeline {
                     color: 'warning',
                     message: "Test Stage Failed!"
         }
+        */
       }
-      */
     } 
     stage ('Clean'){
       agent{label 'awsDeploy'}
@@ -102,8 +102,8 @@ pipeline {
                     color: 'warning',
                     message: "Deployment Stage Failed!"
         }
+        */
       }
-      */
     }
   }
  }
