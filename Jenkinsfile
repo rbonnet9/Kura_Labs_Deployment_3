@@ -30,10 +30,12 @@ pipeline {
    }
     stage ('test') {
       steps {
+        keepRunning {
         sh '''#!/bin/bash
         source test3/bin/activate
         py.test --verbose --junit-xml test-reports/results.xml
         ''' 
+        }
       }
     
       post{
@@ -54,7 +56,8 @@ pipeline {
     } 
     stage ('Clean'){
       agent{label 'awsDeploy'}
-      steps{
+      steps {
+        keepRunning {
         sh '''#!/bin/bash
         if [[ $(ps aux | grep -i "gunicorn" | tr -s " "| head -n 1 | cut -d " " -f 2) != 0 ]]
         then
@@ -63,6 +66,7 @@ pipeline {
           exit 0
         fi
         '''
+        }
       }
       post{
        success { 
@@ -80,7 +84,7 @@ pipeline {
     stage ('Deploy'){
       agent{label 'awsDeploy'}
       steps {
-        keepRunning{
+        keepRunning {
           sh '''#!/bin/bash
           pip install -r requirements.txt
           pip install gunicorn
