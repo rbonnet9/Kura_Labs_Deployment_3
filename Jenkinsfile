@@ -4,8 +4,8 @@ pipeline {
     stage ('Build') {
       steps {
         sh '''#!/bin/bash
-        python3 -m venv test4
-        source test4/bin/activate
+        python3 -m venv test3
+        source test3/bin/activate
         pip install -r requirements.txt
         pip install pip --upgrade
         export FLASK_APP=application
@@ -29,7 +29,7 @@ pipeline {
     stage ('test') {
       steps {
         sh '''#!/bin/bash
-        source test4/bin/activate
+        source test3/bin/activate
         py.test --verbose --junit-xml test-reports/results.xml
         ''' 
       }
