@@ -12,6 +12,19 @@ pipeline {
         flask run &
         '''
      }
+      
+     post{
+        success { 
+          slackSend channel: 'jenkinsnotifications',
+                    color: 'good',
+                    message: "Successful Build Stage!"
+        }
+        failure  {
+          slackSend channel: 'jenkinsnotifications',
+                    color: 'warning',
+                    message: "Build Stage Failed!"
+        }
+      }
    }
     stage ('test') {
       steps {
@@ -25,9 +38,18 @@ pipeline {
         always {
           junit 'test-reports/results.xml'
         }
-       
+        success { 
+          slackSend channel: 'jenkinsnotifications',
+                    color: 'good',
+                    message: "Successful Test Stage!"
+        }
+        failure  {
+          slackSend channel: 'jenkinsnotifications',
+                    color: 'warning',
+                    message: "Test Stage Failed!"
+        }
       }
-    }
+    } 
     stage ('Clean'){
       agent{label 'awsDeploy'}
       steps{
@@ -40,6 +62,18 @@ pipeline {
         fi
         '''
       }
+      post{
+       success { 
+         slackSend channel: 'jenkinsnotifications',
+                    color: 'good',
+                    message: "Successful Clean Stage!"
+        }
+        failure  {
+          slackSend channel: 'jenkinsnotifications',
+                    color: 'warning',
+                    message: "Clean Stage Failed!"
+        }
+      }
     }
     stage ('Deploy'){
       agent{label 'awsDeploy'}
@@ -51,7 +85,19 @@ pipeline {
           python3 -m gunicorn -w 4 application:app -b 0.0.0.0 --daemon
           '''
         }
+        post{
+       success { 
+         slackSend channel: 'jenkinsnotifications',
+                    color: 'good',
+                    message: "Successful Deployment Stage!"
+        }
+        failure  {
+          slackSend channel: 'jenkinsnotifications',
+                    color: 'warning',
+                    message: "Deployment Stage Failed!"
+        }
       }
     }
   }
  }
+     
